@@ -80,8 +80,11 @@ export default {
 				this.oBetterScroll = new BetterScroll(this.$refs.wrapper, {
 					movable: true,
 					zoom: true,
-					click: true
+					click: true,
+					disableMouse: false,
+					disableTouch: false
 				})
+				this.oBetterScroll.refresh()
 			})
 
 		},

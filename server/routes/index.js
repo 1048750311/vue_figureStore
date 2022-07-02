@@ -520,7 +520,7 @@ router.post('/api/addCart', function (req, res, next) {
 
 	// if (getTimeToken(tokenObj.exp)) {
 	// 	console.log('过期了');
-		
+
 	// 	res.send({
 	// 		data: {
 	// 			code: 1000
@@ -600,8 +600,7 @@ router.post('/api/selectUser', function (req, res, next) {
 		userTel: req.body.phone
 	}
 	//查询用户是否存在
-	console.log(params);
-	
+
 	connection.query(user.queryUserTel(params), function (error, results) {
 		if (results.length > 0) {
 			res.send({
@@ -636,7 +635,7 @@ router.post('/api/register', function (req, res, next) {
 				code: 200,
 				data: {
 					success: true,
-					msg: '登录成功',
+					msg: '当前用户已注册，请登录',
 					data: results[0]
 				}
 			})
@@ -712,7 +711,7 @@ router.post('/api/code', function (req, res, next) {
 	var templateId = 285590;  // NOTE: 这里的模板ID`7839`只是一个示例，真实的模板ID需要在短信控制台中申请
 
 	// 签名
-	var smsSign = "三人行慕课";  // NOTE: 这里的签名只是示例，请使用真实的已申请的签名, 签名参数使用的是`签名内容`，而不是`签名ID`
+	var smsSign = "潮玩周边";  // NOTE: 这里的签名只是示例，请使用真实的已申请的签名, 签名参数使用的是`签名内容`，而不是`签名ID`
 
 	// 实例化QcloudSms
 	var qcloudsms = QcloudSms(appid, appkey);
@@ -740,6 +739,56 @@ router.post('/api/code', function (req, res, next) {
 
 })
 
+//手机号登录
+router.post('/api/phonelogin', function (req, res, next) {
+	//后端要接收前端传递过来的值
+	let params = {
+		userTel: req.body.userTel,
+	};
+
+	let userTel = params.userTel;
+	//引入token包
+	let jwt = require('jsonwebtoken');
+	//用户信息
+	let payload = { tel: userTel };
+	//口令
+	let secret = 'xiaoluxian';
+	//生成token
+	let token = jwt.sign(payload, secret, {
+		expiresIn: 86400
+	});
+
+	//查询用户手机号是否存在
+	connection.query(user.queryUserTel(params), function (error, results) {
+		//手机号存在 
+		console.log(results)
+		if (results.length > 0) {
+			//记录的id
+			let id = results[0].id;
+			connection.query(`update user set token = '${token}' where id = ${id}`, function () {
+				//手机号和密码都对
+				res.send({
+					code: 200,
+					data: {
+						success: true,
+						msg: '登录成功',
+						data: results[0]
+					}
+				})
+			})
+
+} else {
+	//不存在
+	res.send({
+		code: 301,
+		data: {
+			success: false,
+			msg: '手机号不存在'
+		}
+	})
+}
+	})
+})
 //登录
 router.post('/api/login', function (req, res, next) {
 	//后端要接收前端传递过来的值
@@ -758,7 +807,7 @@ router.post('/api/login', function (req, res, next) {
 	let secret = 'xiaoluxian';
 	//生成token
 	let token = jwt.sign(payload, secret, {
-		expiresIn: 60
+		expiresIn: 86400
 	});
 
 	//查询用户手机号是否存在

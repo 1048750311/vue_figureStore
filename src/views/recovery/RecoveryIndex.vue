@@ -92,14 +92,19 @@ export default{
 		},
 		//验证信息提示
 		validate( key ){
-			let bool = true;
-			if( !this.rules[key].rule.test( this[key])  ){
-				//提示信息
-				Toast(this.rules[key].msg);
-				bool = false;
-				return false;
+			if(!key){
+				let bool = true;
+				if( !this.rules[key].rule.test( this[key])  ){
+					//提示信息
+					Toast(this.rules[key].msg);
+					bool = false;
+					return false;
+				}
+				return bool;
+			}else{
+				let bool = true;
+				return  bool;
 			}
-			return bool;
 		},
 		//点击下一步
 		next(){
@@ -150,6 +155,7 @@ section{
 		margin:0.266666rem 0;
 		width: 8.933333rem;
 		height: 1.173333rem;
+		font-size: 0.32rem;
 	}
 	input{
 		box-sizing: border-box;
@@ -180,7 +186,7 @@ section{
 		}
 	}
 	.login-btn{
-		line-height: 44px;
+		line-height: 1.173333rem;
 		color:#fff;
 		text-align: center;
 		background-color: #1296db;

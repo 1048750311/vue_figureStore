@@ -3,7 +3,7 @@ import {
     INIT_USER,
     LOGIN_OUT
 } from './mutations-types.js'
-
+import { Toast } from 'vant';
 export default{
 	state:{
 		loginStatus:false,//登录状态
@@ -37,6 +37,8 @@ export default{
 			state.token = null;
 			state.userInfo = {};
 			localStorage.removeItem('UserInfo');
+			Toast(`退出成功`);
+			
 		}
 	},
 	actions:{

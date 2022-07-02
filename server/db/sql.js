@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 let connection = mysql.createConnection({
 	host: '0.0.0.0',
+	// host: '119.29.86.152',
 	user: 'root',
 	password: "qazwdc00",
 	database: 'vue_store'

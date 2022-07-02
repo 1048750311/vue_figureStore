@@ -28,7 +28,9 @@
 				<div class='swiper-main'>
 					<swiper :options="swiperOption">
 						<swiper-slide v-for='(item, index) in swiperList' :key='index'>
-							<img :src="item.imgUrl" alt="">
+							<div @click="openImg(item.imgUrl, index)">
+								<img :src="item.imgUrl" alt="">
+							</div>
 						</swiper-slide>
 					</swiper>
 					<div class="swiper-pagination"></div>
@@ -48,15 +50,18 @@
 					</div>
 				</div>
 				<div>
-					<img style='width:100%;height: 500px;' :src="goods.imgUrl" alt="">
-					<img style='width:100%;height: 500px;' :src="goods.imgUrl" alt="">
+					<img style='width:100%;height: 450px;' :src="goods.imgUrl" alt="">
+					<img style='width:100%;height: 450px;' :src="goods.imgUrl" alt="">
 				</div>
 			</div>
 		</section>
-		<footer>
-			<div class='add-cart' @click='addCart'>加入购物车</div>
-			<div>立即购买</div>
-		</footer>
+		<div class="postion"></div>
+		<van-goods-action class="footer">
+			<van-goods-action-icon icon="chat-o" text="客服" @click="onClickIcon('客服')" />
+			<van-goods-action-icon icon="shop-o" text="店铺" @click="onClickIcon('店铺')" />
+			<van-goods-action-button color="#66ccff" type="warning" @click="addCart" text="加入购物车" />
+			<van-goods-action-button color="#7232dd" type="danger" text="立即购买" @click="onClickIcon('立即购买')" />
+		</van-goods-action>
 	</div>
 </template>
 
@@ -66,6 +71,7 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import BetterScroll from 'better-scroll'
 import http from '@/common/api/request.js'
 import { Toast } from 'mint-ui';
+import { ImagePreview } from "vant";
 export default {
 	data() {
 		return {
@@ -83,17 +89,7 @@ export default {
 					type: 'fraction'
 				}
 			},
-			swiperList: [
-				// {
-				// 	imgUrl: './images/goods1.jpg'
-				// },
-				// {
-				// 	imgUrl: './images/goods2.jpg'
-				// },
-				// {
-				// 	imgUrl: './images/goods3.jpg'
-				// }
-			]
+			swiperList: []
 		}
 	},
 	components: {
@@ -110,7 +106,9 @@ export default {
 		this.BetterScroll = new BetterScroll(this.$refs.wrapper, {
 			probeType: 3,
 			bounce: false,
-			click: true
+			click: true,
+			disableMouse: false,
+			disableTouch: false
 		})
 		this.BetterScroll.on('scroll', (pos) => {
 			let posY = Math.abs(pos.y);
@@ -161,38 +159,60 @@ export default {
 				{
 					imgUrl: './images/goods7.jpg'
 				}
-			]
+			],
+				this.swiperList1 = [
+					{
+						imgUrl: this.goods.imgUrl
+					},
+				]
 		},
 		//加入购物车
 		addCart() {
 			let id = this.$route.query.id;
-			let userInfo1 = JSON.parse( localStorage.getItem('UserInfo') );
-			
-			if(userInfo1){
-			http.$axios({
-				url: '/api/addCart',
-				method: "post",
-				data: {
-					goodsId: id
-				},
-				headers: {
-					token: true
-				}
-			}).then(res => {
-				if (res.success) {
-					Toast('添加购物车成功');
-				}
-			})
-		}else{
-			Toast('当前未登录');
-			console.log('123123123');
-			
-			this.$router.push('/login')
-		}
+			let userInfo1 = JSON.parse(localStorage.getItem('UserInfo'));
+
+			if (userInfo1) {
+				http.$axios({
+					url: '/api/addCart',
+					method: "post",
+					data: {
+						goodsId: id
+					},
+					headers: {
+						token: true
+					}
+				}).then(res => {
+					if (res.success) {
+						Toast('添加购物车成功');
+					}
+				})
+			} else {
+				Toast('当前未登录');
+				console.log('123123123');
+
+				this.$router.push('/login')
+			}
 		},
 		//返回上一页
 		goBack() {
 			this.$router.back();
+		},
+		openImg(item, index) {
+			var arr = new Array();
+			this.swiperList.forEach((item) => {
+				arr.push(item.imgUrl);
+			})
+			ImagePreview({
+				images: arr,
+				showIndex: true,
+				loop: true,
+				startPosition: index,
+				closeable: true,
+			});
+		},
+		onClickIcon(text) {
+			console.log(text)
+			Toast(`你点击了${text}图标`);
 		},
 	}
 }
@@ -244,7 +264,7 @@ header {
 		width: 100%;
 		height: 1.173333rem;
 		font-size: 0.426666rem;
-		background-color: #fff;
+		background-color: #66ccff;
 
 		span {
 			padding: 0 0.266666rem;
@@ -337,19 +357,8 @@ footer {
 	height: 1.306666rem;
 	border-top: 1px solid #cccccc;
 	background-color: #fff;
-
-	div {
-		width: 50%;
-		line-height: 1.306666rem;
-		font-size: 0.426666rem;
-		text-align: center;
-		color: #fff;
-		background-color: red;
-
-		&.add-cart {
-			background-color: #FF9500;
-		}
-	}
-
+}
+.postion{
+	height: 1.3333rem;
 }
 </style>

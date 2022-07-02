@@ -12,35 +12,35 @@
 		<div class="sort_icons">
 			<ul>
 				<li>
-					<i class="iconfont">&#xe645;</i>
+					<i class="iconfont" @click="onClickIcon('我的订单')">&#xe645;</i>
 					<span>我的订单</span>
 				</li>
 				<li>
-					<i class="iconfont">&#xe899;</i>
+					<i class="iconfont" @click="onClickIcon('购物车')">&#xe899;</i>
 					<span>购物车</span>
 				</li>
 				<li>
-					<i class="iconfont">&#xe63d;</i>
+					<i class="iconfont" @click="onClickIcon('收藏店铺')">&#xe63d;</i>
 					<span>收藏店铺</span>
 				</li>
 				<li>
-					<i class="iconfont">&#xe63d;</i>
+					<i class="iconfont" @click="onClickIcon('收藏商品')">&#xe63d;</i>
 					<span>收藏商品</span>
 				</li>
 				<li>
-					<i class="iconfont">&#xe645;</i>
+					<i class="iconfont" @click="onClickIcon('优惠券')">&#xe645;</i>
 					<span>优惠券</span>
 				</li>
 				<li>
-					<i class="iconfont">&#xe61f;</i>
+					<i class="iconfont" @click="onClickIcon('附近')">&#xe61f;</i>
 					<span>附近</span>
 				</li>
 				<li>
-					<i class="iconfont">&#xe63d;</i>
+					<i class="iconfont" @click="onClickIcon('充值')">&#xe63d;</i>
 					<span>充值</span>
 				</li>
 				<li>
-					<i class="iconfont">&#xe783;</i>
+					<i class="iconfont" @click="onClickIcon('好友')">&#xe783;</i>
 					<span>好友</span>
 				</li>
 			</ul>
@@ -58,6 +58,7 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import Tabbar from '@/components/common/Tabbar.vue'
+import { Toast } from 'vant';
 export default {
 	name: "My",
 	components: {
@@ -76,8 +77,15 @@ export default {
 		},
 		//进入地址管理
 		goPath() {
+			if (!this.loginStatus) {
+				Toast("请登录再修改");
+			}
 			this.$router.push('/path');
-		}
+		},
+		onClickIcon(text) {
+			console.log(text)
+			Toast(`${text}模块暂未开发`);
+		},
 	}
 };
 </script>
@@ -163,5 +171,4 @@ section {
 		font-size: 0.426666rem;
 	}
 }
-
 </style>
